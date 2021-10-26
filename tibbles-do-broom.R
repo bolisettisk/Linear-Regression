@@ -27,25 +27,11 @@ fit <- lm(R ~ BB, dat)
 
 cat("\014")
 
-get_slope <- function(data) {
-  fit <- lm(R ~ BB, data = data)
-  sum.fit <- summary(fit)
-  
-  data.frame(slope = sum.fit$coefficients[2, "Estimate"], 
-             se = sum.fit$coefficients[2, "Std. Error"],
-             pvalue = sum.fit$coefficients[2, "Pr(>|t|)"])
-}
 
+dat %>%  
+  group_by(HR) %>%
+  summarize(tidy(lm(R ~ BB), conf.int = TRUE))
 
-cat("\014")
-dat <- Teams %>% filter(yearID %in% 1961:2001) %>%
-  mutate(HR = HR/G,
-         R = R/G) %>%
-  select(lgID, HR, BB, R) 
-
-dat %>% 
-  do(tidy(lm(R ~ HR, data = .), conf.int = T)) %>% 
-  filter(term == "HR")
 
 
 
